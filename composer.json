@@ -1,0 +1,23 @@
+{
+    "name": "enmarche/majority-judgment",
+    "type": "library",
+    "description": "Majority judgment - the lib calculates the result of an election",
+    "license": "MIT",
+    "homepage": "https://github.com/EnMarche/majority-judgment",
+    "autoload": {
+        "psr-4": {
+            "EnMarche\\MajorityJudgment\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\EnMarche\\MajorityJudgment\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=7.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}
