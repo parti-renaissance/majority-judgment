@@ -24,6 +24,11 @@ class Election
      */
     private $result;
 
+    /**
+     * @var int
+     */
+    private $totalVotes;
+
     public function __construct(array $mentions)
     {
         if (empty($mentions)) {
@@ -78,7 +83,8 @@ class Election
 
     /**
      * @param Mention[] $mentions
-     * @param string[]  $candidateIdentifiers
+     * @param string[] $candidateIdentifiers
+     * @param array $votingProfiles
      */
     public static function createWithVotingProfiles(
         array $mentions,
@@ -103,10 +109,12 @@ class Election
 
             $candidate = $election->findCandidate($candidateIdentifier);
             $election->addVotingProfile($votingProfile = new VotingProfile($candidate));
+            $election->setTotalVotes($total);
 
             foreach ($mentionRow as $mentionIndex => $count) {
                 $votingProfile->addMerit(new Merit(
                     $election->findMention($mentionIndex),
+                    $count >= 0 ? $count : 0,
                     $total > 0 ? $count * 100.0 / $total : 0.0
                 ));
             }
@@ -141,5 +149,15 @@ class Election
         }
 
         return null;
+    }
+
+    public function getTotalVotes(): int
+    {
+        return $this->totalVotes;
+    }
+
+    public function setTotalVotes(int $totalVotes): void
+    {
+        $this->totalVotes = $totalVotes;
     }
 }

@@ -107,7 +107,7 @@ class ProcessorTest extends TestCase
             'Mr C',
         ];
 
-        yield 'simple test 5: without votes' => [
+        yield 'simple test 6: without votes' => [
             [
                 'Mr A',
                 'Mr B',
@@ -115,6 +115,18 @@ class ProcessorTest extends TestCase
             ],
             [],
             null,
+        ];
+
+        yield 'simple test 7: good winner' => [
+            [
+                'Mr A',
+                'Mr B',
+            ],
+            [
+                'Mr A' => [12, 12, 9, 3, 6, 0],
+                'Mr B' => [14, 10, 7, 8, 3, 0],
+            ],
+            'Mr B',
         ];
 
         yield 'equals test 1: simple case when biggest proponent wins' => [
