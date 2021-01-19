@@ -17,13 +17,14 @@ final class Processor
                 continue;
             }
 
-            $totalPercent = 0.0;
+            $median = $election->getTotalVotes() / 2.0;
+            $totalScore = 0.0;
             $majorityMention = null;
 
             foreach ($votingProfile->getMerits() as $merit) {
-                $totalPercent += $merit->getPercent();
+                $totalScore += $merit->getScore();
 
-                if ($totalPercent > 50) {
+                if ($totalScore > $median) {
                     $majorityMention = $merit->getMention();
 
                     if (!isset($result[$majorityMention->getIndex()])) {
@@ -79,9 +80,13 @@ final class Processor
                 self::resetPreviousMerit($equalsCandidates, $votingProfiles);
             }
         } elseif ($maxProponentsPercent < $maxOpponentsPercent) {
-            foreach ($equalsCandidates as $index => $candidate) {
-                if (\in_array($candidate, $maxOpponentsCandidates)) {
-                    unset($equalsCandidates[$index]);
+            if (count($maxOpponentsCandidates) === count($equalsCandidates)) {
+                self::resetPreviousMerit($equalsCandidates, $votingProfiles, true);
+            } else {
+                foreach ($equalsCandidates as $index => $candidate) {
+                    if (\in_array($candidate, $maxOpponentsCandidates)) {
+                        unset($equalsCandidates[$index]);
+                    }
                 }
             }
         } else {
@@ -113,36 +118,36 @@ final class Processor
                 continue;
             }
 
-            $totalPercent = 0.0;
+            $totalScore = 0.0;
 
             foreach ($votingProfile->getMerits() as $merit) {
                 if ($merit->getMention() === $candidate->getMajorityMention()) {
-                    if ($maxProponentsPercent <= $totalPercent) {
-                        if ($maxProponentsPercent === $totalPercent) {
+                    if ($maxProponentsPercent <= $totalScore) {
+                        if ($maxProponentsPercent === $totalScore) {
                             $maxProponentsCandidates[] = $candidate;
                         } else {
                             $maxProponentsCandidates = [$candidate];
                         }
-                        $maxProponentsPercent = $totalPercent;
+                        $maxProponentsPercent = $totalScore;
                     }
 
-                    $totalPercent = 0.0;
+                    $totalScore = 0.0;
 
                     continue;
                 }
 
                 if (!$merit->isReset()) {
-                    $totalPercent += $merit->getPercent();
+                    $totalScore += $merit->getScore();
                 }
             }
 
-            if ($maxOpponentsPercent <= $totalPercent) {
-                if ($maxOpponentsPercent === $totalPercent) {
+            if ($maxOpponentsPercent <= $totalScore) {
+                if ($maxOpponentsPercent === $totalScore) {
                     $maxOpponentsCandidates[] = $candidate;
                 } else {
                     $maxOpponentsCandidates = [$candidate];
                 }
-                $maxOpponentsPercent = $totalPercent;
+                $maxOpponentsPercent = $totalScore;
             }
         }
 
